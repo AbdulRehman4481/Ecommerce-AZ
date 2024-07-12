@@ -1,12 +1,35 @@
-import { Fragment } from "react"; 
+import { Fragment, useState } from "react"; 
 import { useLocation } from "react-router-dom";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import GoogleMap from "../../components/google-map"
+import { useDispatch, useSelector } from "react-redux";
+import {  sendContactForm } from '../../store/slices/contact-slice';
 
 const Contact = () => {
   let { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const formStatus = useSelector((state) => state.contact.status);
+  const error = useSelector((state) => state.contact.error);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subjects: "",
+    message: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    dispatch(sendContactForm(formData));
+  };
 
   return (
     <Fragment>
@@ -102,19 +125,23 @@ const Contact = () => {
                   <div className="contact-title mb-30">
                     <h2>Get In Touch</h2>
                   </div>
-                  <form className="contact-form-style">
+                  <form className="contact-form-style" onSubmit={handleSubmit}>
                     <div className="row">
                       <div className="col-lg-6">
-                        <input name="name" placeholder="Name*" type="text" />
+                        <input name="name" placeholder="Name*" type="text" value={formData.name} 
+                          onChange={handleChange}/>
                       </div>
                       <div className="col-lg-6">
-                        <input name="email" placeholder="Email*" type="email" />
+                        <input name="email" placeholder="Email*" type="email" value={formData.email} 
+                          onChange={handleChange}  />
                       </div>
                       <div className="col-lg-12">
                         <input
-                          name="subject"
+                          name="subjects"
                           placeholder="Subject*"
                           type="text"
+                          value={formData.subjects} 
+                          onChange={handleChange} 
                         />
                       </div>
                       <div className="col-lg-12">
@@ -122,9 +149,11 @@ const Contact = () => {
                           name="message"
                           placeholder="Your Message*"
                           defaultValue={""}
+                          value={formData.message}
+                          onChange={handleChange}
                         />
                         <button className="submit" type="submit">
-                          SEND
+                        {formStatus === 'loading' ? 'Sending...' : 'Send'}
                         </button>
                       </div>
                     </div>
