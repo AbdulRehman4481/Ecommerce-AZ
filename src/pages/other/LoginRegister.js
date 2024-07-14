@@ -109,6 +109,7 @@ const LoginRegister = () => {
                                 placeholder="Email"
                                 value={loginFormData.email}
                                 onChange={handleLoginChange}
+                                required
                               />
                               <input
                                 type="password"
@@ -116,10 +117,12 @@ const LoginRegister = () => {
                                 placeholder="Password"
                                 value={loginFormData.password}
                                 onChange={handleLoginChange}
+                                required
+                              
                               />
                               <div className="button-box">
                                 <div className="login-toggle-btn">
-                                  <input type="checkbox" />
+                                  <input type="checkbox" required/>
                                   <label className="ml-10">Remember me</label>
                                   <Link to={process.env.PUBLIC_URL + "/"}>
                                     Forgot Password?
@@ -143,6 +146,8 @@ const LoginRegister = () => {
                                 placeholder="Username"
                                 value={registerFormData.username}
                                 onChange={handleChange}
+                                required
+                              
                               />
                               <input
                                 type="password"
@@ -150,6 +155,8 @@ const LoginRegister = () => {
                                 placeholder="Password"
                                 value={registerFormData.password}
                                 onChange={handleChange}
+                                required
+                              
                               />
                               <input
                                 name="email"
@@ -157,6 +164,8 @@ const LoginRegister = () => {
                                 type="email"
                                 value={registerFormData.email}
                                 onChange={handleChange}
+                                required
+                              
                               />
                               <div className="button-box">
                                 <button type="submit">
