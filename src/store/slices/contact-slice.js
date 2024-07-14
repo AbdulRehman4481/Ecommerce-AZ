@@ -1,11 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const sendContactForm = createAsyncThunk(
-  'form/sendContactForm',
+  "form/sendContactForm",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:3000/v1/contact', formData);
+      const response = await axios.post(
+        "https://ecommerece-server.vercel.app/v1/contact",
+        formData
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -14,15 +17,15 @@ export const sendContactForm = createAsyncThunk(
 );
 
 const formSlice = createSlice({
-  name: 'form',
+  name: "form",
   initialState: {
     formData: {
-      name: '',
-      email: '',
-      subjects: '',
-      message: ''
+      name: "",
+      email: "",
+      subjects: "",
+      message: "",
     },
-    status: 'idle',
+    status: "idle",
     error: null,
   },
   reducers: {
@@ -33,14 +36,14 @@ const formSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(sendContactForm.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
         state.error = null;
       })
       .addCase(sendContactForm.fulfilled, (state) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
       })
       .addCase(sendContactForm.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = "failed";
         state.error = action.payload;
       });
   },
