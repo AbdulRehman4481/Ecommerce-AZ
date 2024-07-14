@@ -1,13 +1,67 @@
-import React, { Fragment } from "react";
-import { Link, useLocation } from "react-router-dom"; 
+import React, { Fragment, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, selectAuthStatus } from "../../store/slices/register-slice";
+import { loginUser, selectLoginStatus } from "../../store/slices/login-slice";
 
 const LoginRegister = () => {
   let { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const status = useSelector(selectAuthStatus);
+  const loginStatus = useSelector(selectLoginStatus);
+
+
+  // login
+  const [loginFormData, setLoginFormData] = useState({
+    email: "",
+    password: ""
+  });
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setLoginFormData({
+      ...loginFormData,
+      [name]: value,
+    });
+  };
+
+  const handleLoginSubmit = async(e) => {
+    e.preventDefault();
+    try {
+      await dispatch(loginUser(loginFormData));
+    } catch (error) {
+      console.error('Error:', error);
+    }
+ console.log(loginFormData)
+  };
+
+  // register
+  const [registerFormData, setRegisterFormData] = useState({
+    name: "",
+    password: "",
+    email: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRegisterFormData({
+      ...registerFormData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    try {
+      await dispatch(registerUser(registerFormData));
+    } catch (error) {
+      console.error('Error:', error); 
+    }
+  };
 
   return (
     <Fragment>
@@ -17,11 +71,14 @@ const LoginRegister = () => {
       />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Login Register", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            {
+              label: "Login Register",
+              path: process.env.PUBLIC_URL + pathname,
+            },
+          ]}
         />
         <div className="login-register-area pt-100 pb-100">
           <div className="container">
@@ -45,16 +102,20 @@ const LoginRegister = () => {
                       <Tab.Pane eventKey="login">
                         <div className="login-form-container">
                           <div className="login-register-form">
-                            <form>
+                            <form onSubmit={handleLoginSubmit}>
                               <input
-                                type="text"
-                                name="user-name"
-                                placeholder="Username"
+                                type="email"
+                                name="email"
+                                placeholder="Email"
+                                value={loginFormData.email}
+                                onChange={handleLoginChange}
                               />
                               <input
                                 type="password"
-                                name="user-password"
+                                name="password"
                                 placeholder="Password"
+                                value={loginFormData.password}
+                                onChange={handleLoginChange}
                               />
                               <div className="button-box">
                                 <div className="login-toggle-btn">
@@ -65,7 +126,7 @@ const LoginRegister = () => {
                                   </Link>
                                 </div>
                                 <button type="submit">
-                                  <span>Login</span>
+                                  <span>{loginStatus === 'loading' ? 'Logging in...' : 'Login'}</span>
                                 </button>
                               </div>
                             </form>
@@ -75,25 +136,31 @@ const LoginRegister = () => {
                       <Tab.Pane eventKey="register">
                         <div className="login-form-container">
                           <div className="login-register-form">
-                            <form>
+                            <form onSubmit={handleSubmit}>
                               <input
                                 type="text"
-                                name="user-name"
+                                name="name"
                                 placeholder="Username"
+                                value={registerFormData.username}
+                                onChange={handleChange}
                               />
                               <input
                                 type="password"
-                                name="user-password"
+                                name="password"
                                 placeholder="Password"
+                                value={registerFormData.password}
+                                onChange={handleChange}
                               />
                               <input
-                                name="user-email"
+                                name="email"
                                 placeholder="Email"
                                 type="email"
+                                value={registerFormData.email}
+                                onChange={handleChange}
                               />
                               <div className="button-box">
                                 <button type="submit">
-                                  <span>Register</span>
+                                  <span> {status === 'loading' ? 'Registering...' : 'Register'}</span>
                                 </button>
                               </div>
                             </form>
