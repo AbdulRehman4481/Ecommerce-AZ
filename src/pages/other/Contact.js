@@ -129,11 +129,11 @@ const Contact = () => {
                     <div className="row">
                       <div className="col-lg-6">
                         <input name="name" placeholder="Name*" type="text" value={formData.name} 
-                          onChange={handleChange}/>
+                          onChange={handleChange} required/>
                       </div>
                       <div className="col-lg-6">
                         <input name="email" placeholder="Email*" type="email" value={formData.email} 
-                          onChange={handleChange}  />
+                          onChange={handleChange}  required/>
                       </div>
                       <div className="col-lg-12">
                         <input
@@ -142,6 +142,7 @@ const Contact = () => {
                           type="text"
                           value={formData.subjects} 
                           onChange={handleChange} 
+                          required
                         />
                       </div>
                       <div className="col-lg-12">
@@ -151,6 +152,7 @@ const Contact = () => {
                           defaultValue={""}
                           value={formData.message}
                           onChange={handleChange}
+                          required
                         />
                         <button className="submit" type="submit">
                         {formStatus === 'loading' ? 'Sending...' : 'Send'}

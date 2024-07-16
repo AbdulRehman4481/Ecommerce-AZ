@@ -6,14 +6,17 @@ import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, selectAuthStatus } from "../../store/slices/register-slice";
-import { loginUser, selectLoginStatus } from "../../store/slices/login-slice";
+import { registerUser, selectAuthError, selectAuthStatus } from "../../store/slices/register-slice";
+import { loginUser, selectLoginError, selectLoginStatus } from "../../store/slices/login-slice";
 
 const LoginRegister = () => {
   let { pathname } = useLocation();
   const dispatch = useDispatch();
   const status = useSelector(selectAuthStatus);
   const loginStatus = useSelector(selectLoginStatus);
+  const error = useSelector(selectAuthError);
+  const errorLogin = useSelector(selectLoginError);
+
 
 
   // login
@@ -120,6 +123,7 @@ const LoginRegister = () => {
                                 required
                               
                               />
+                             {loginStatus === 'failed' && <p style={{ color: 'red' }}>{errorLogin}</p>}
                               <div className="button-box">
                                 <div className="login-toggle-btn">
                                   <input type="checkbox" required/>
@@ -167,6 +171,7 @@ const LoginRegister = () => {
                                 required
                               
                               />
+                              {status === 'failed' && <p style={{ color: 'red' }}>{error}</p>}
                               <div className="button-box">
                                 <button type="submit">
                                   <span> {status === 'loading' ? 'Registering...' : 'Register'}</span>

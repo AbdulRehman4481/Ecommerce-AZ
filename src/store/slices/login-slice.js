@@ -25,18 +25,21 @@ const loginSlice = createSlice({
     builder
       .addCase(loginUser.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload;
+        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload.message || action.payload; // Capture the error message
       });
   },
 });
 
-export const selectLoginStatus = (state) => state.login.status;  
+export const selectLoginStatus = (state) => state.login.status;
+export const selectLoginError = (state) => state.login.error;
 
 export default loginSlice.reducer;
