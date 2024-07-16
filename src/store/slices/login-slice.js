@@ -1,11 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const loginUser = createAsyncThunk(
-  'auth/loginUser',
+  "auth/loginUser",
   async (loginFormData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:3000/v1/auth/login', loginFormData);
+      const response = await axios.post(
+        "https://ecommerece-server.vercel.app/v1/auth/login",
+        loginFormData
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -14,10 +17,10 @@ export const loginUser = createAsyncThunk(
 );
 
 const loginSlice = createSlice({
-  name: 'login',
+  name: "login",
   initialState: {
     user: null,
-    status: 'idle', // idle | loading | succeeded | failed
+    status: "idle", // idle | loading | succeeded | failed
     error: null,
   },
   reducers: {},
@@ -28,7 +31,7 @@ const loginSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.user = action.payload;
         state.error = null;
       })

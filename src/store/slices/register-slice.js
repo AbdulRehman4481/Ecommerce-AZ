@@ -1,11 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const registerUser = createAsyncThunk(
-  'auth/registerUser',
+  "auth/registerUser",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:3000/v1/auth/register', formData);
+      const response = await axios.post(
+        "https://ecommerece-server.vercel.app/v1/auth/register",
+        formData
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -14,10 +17,10 @@ export const registerUser = createAsyncThunk(
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
     user: null,
-    status: 'idle',
+    status: "idle",
     error: null,
   },
   reducers: {},
@@ -28,7 +31,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.user = action.payload;
         state.error = null;
       })
