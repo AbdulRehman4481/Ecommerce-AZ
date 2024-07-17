@@ -37,7 +37,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload.message || action.payload; // Capture the error message
+        state.error = action.payload.message || action.payload; 
       });
   },
 });

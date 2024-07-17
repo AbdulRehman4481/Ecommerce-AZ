@@ -20,7 +20,7 @@ const loginSlice = createSlice({
   name: "login",
   initialState: {
     user: null,
-    status: "idle", // idle | loading | succeeded | failed
+    status: "idle",  
     error: null,
   },
   reducers: {},
@@ -37,7 +37,7 @@ const loginSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload.message || action.payload; // Capture the error message
+        state.error = action.payload.message || action.payload;  
       });
   },
 });
