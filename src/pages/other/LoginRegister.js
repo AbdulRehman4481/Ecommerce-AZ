@@ -156,7 +156,7 @@ useEffect(() => {
                                   </Link>
                                 </div>
                                 <button type="submit">
-                                  <span>{loginStatus === 'loading' ? 'Logging in...' : 'Login'}</span>
+                                  <span>{loginStatus === 'loading' ? 'Logging in....' : 'Login'}</span>
                                 </button>
                               </div>
                             </form>
