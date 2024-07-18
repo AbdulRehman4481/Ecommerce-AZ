@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
@@ -66,6 +66,29 @@ const LoginRegister = () => {
     }
   };
 
+  const [showLoginError, setShowLoginError] = useState(false);
+const [showRegisterError, setShowRegisterError] = useState(false);
+useEffect(() => {
+  if (loginStatus === 'failed') {
+    setShowLoginError(true);
+    const timer = setTimeout(() => {
+      setShowLoginError(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }
+}, [loginStatus]);
+
+useEffect(() => {
+  if (status === 'failed') {
+    setShowRegisterError(true);
+    const timer = setTimeout(() => {
+      setShowRegisterError(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }
+}, [status]);
+
+
   return (
     <Fragment>
       <SEO
@@ -123,7 +146,7 @@ const LoginRegister = () => {
                                 required
                               
                               />
-                             {loginStatus === 'failed' && <p style={{ color: 'red' }}>{errorLogin}</p>}
+                             {showLoginError && loginStatus === 'failed' && <p style={{ color: 'red' }}>{errorLogin}</p>}
                               <div className="button-box">
                                 <div className="login-toggle-btn">
                                   <input type="checkbox" required/>
@@ -171,7 +194,7 @@ const LoginRegister = () => {
                                 required
                               
                               />
-                              {status === 'failed' && <p style={{ color: 'red' }}>{error}</p>}
+                              {showRegisterError && status === 'failed' && <p style={{ color: 'red' }}>{error}</p>}
                               <div className="button-box">
                                 <button type="submit">
                                   <span> {status === 'loading' ? 'Registering...' : 'Register'}</span>
