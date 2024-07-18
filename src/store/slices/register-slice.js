@@ -27,17 +27,22 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
+        state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload;
+        state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
+        state.status = 'failed';
+        state.error = action.payload.message || action.payload; 
       });
   },
 });
+
 export const selectAuthStatus = (state) => state.register.status;
+export const selectAuthError = (state) => state.register.error;
+
 export default authSlice.reducer;

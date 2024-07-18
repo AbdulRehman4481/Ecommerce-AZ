@@ -40,15 +40,19 @@ const formSlice = createSlice({
         state.error = null;
       })
       .addCase(sendContactForm.fulfilled, (state) => {
-        state.status = "succeeded";
+        state.status = 'succeeded';
+        state.error = null;
+
       })
       .addCase(sendContactForm.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
+        state.status = 'failed';
+        state.error = action.payload.message || action.payload;
+
       });
   },
 });
 
 export const { updateFormData } = formSlice.actions;
+
 
 export default formSlice.reducer;

@@ -20,26 +20,29 @@ const loginSlice = createSlice({
   name: "login",
   initialState: {
     user: null,
-    status: "idle", // idle | loading | succeeded | failed
+    status: "idle",  
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
+        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload;
+        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
+        state.status = 'failed';
+        state.error = action.payload.message || action.payload;  
       });
   },
 });
 
 export const selectLoginStatus = (state) => state.login.status;
+export const selectLoginError = (state) => state.login.error;
 
 export default loginSlice.reducer;
