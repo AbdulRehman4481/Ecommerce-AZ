@@ -88,7 +88,9 @@ useEffect(() => {
   }
 }, [status]);
 
-
+const getErrorMessage = (error) => {
+  return error && typeof error === 'object' ? error.message || JSON.stringify(error) : error;
+};
   return (
     <Fragment>
       <SEO
@@ -146,7 +148,7 @@ useEffect(() => {
                                 required
                               
                               />
-                             {showLoginError && loginStatus === 'failed' && <p style={{ color: 'red' }}>{errorLogin}</p>}
+                             {showLoginError && loginStatus === 'failed' && <p style={{ color: 'red' }}>{getErrorMessage(errorLogin)}</p>}
                               <div className="button-box">
                                 <div className="login-toggle-btn">
                                   <input type="checkbox" required/>
@@ -194,7 +196,7 @@ useEffect(() => {
                                 required
                               
                               />
-                              {showRegisterError && status === 'failed' && <p style={{ color: 'red' }}>{error}</p>}
+                              {showRegisterError && status === 'failed' && <p style={{ color: 'red' }}>{getErrorMessage(error)}</p>}
                               <div className="button-box">
                                 <button type="submit">
                                   <span> {status === 'loading' ? 'Registering...' : 'Register'}</span>
