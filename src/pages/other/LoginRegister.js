@@ -60,7 +60,7 @@ const LoginRegister = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-      await dispatch(registerUser(registerFormData));
+       dispatch(registerUser(registerFormData));
     } catch (error) {
       console.error('Error:', error); 
     }

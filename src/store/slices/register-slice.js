@@ -1,17 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { API } from "../../constants/apiConfig/apiConfig";
+import { API_ROUTES } from "../../constants/apiConfig/api.constant";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "https://ecommerece-server.vercel.app/v1/auth/register",
-        formData
-      );
-      return response.data;
+      const response = await API.POST(API_ROUTES?.auth?.register, formData);
+      return response?.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error);
     }
   }
 );
