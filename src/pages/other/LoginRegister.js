@@ -6,8 +6,16 @@ import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, selectAuthError, selectAuthStatus } from "../../store/slices/register-slice";
-import { loginUser, selectLoginError, selectLoginStatus, } from "../../store/slices/login-slice";
+import {
+  registerUser,
+  selectAuthError,
+  selectAuthStatus,
+} from "../../store/slices/register-slice";
+import {
+  loginUser,
+  selectLoginError,
+  selectLoginStatus,
+} from "../../store/slices/login-slice";
 
 const LoginRegister = () => {
   let { pathname } = useLocation();
@@ -18,12 +26,10 @@ const LoginRegister = () => {
   const loginStatus = useSelector(selectLoginStatus);
   const errorLogin = useSelector(selectLoginError);
 
-
-
   // login
   const [loginFormData, setLoginFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
@@ -36,10 +42,10 @@ const LoginRegister = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-     dispatch(loginUser(loginFormData));
-        navigate('/');
+      dispatch(loginUser(loginFormData));
+      navigate("/");
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
 
@@ -58,40 +64,42 @@ const LoginRegister = () => {
     });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       dispatch(registerUser(registerFormData));
+      dispatch(registerUser(registerFormData));
     } catch (error) {
-      console.error('Error:', error); 
+      console.error("Error:", error);
     }
   };
 
   const [showLoginError, setShowLoginError] = useState(false);
-const [showRegisterError, setShowRegisterError] = useState(false);
-useEffect(() => {
-  if (loginStatus === 'failed') {
-    setShowLoginError(true);
-    const timer = setTimeout(() => {
-      setShowLoginError(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }
-}, [loginStatus]);
+  const [showRegisterError, setShowRegisterError] = useState(false);
+  useEffect(() => {
+    if (loginStatus === "failed") {
+      setShowLoginError(true);
+      const timer = setTimeout(() => {
+        setShowLoginError(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [loginStatus]);
 
-useEffect(() => {
-  if (status === 'failed') {
-    setShowRegisterError(true);
-    const timer = setTimeout(() => {
-      setShowRegisterError(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }
-}, [status]);
+  useEffect(() => {
+    if (status === "failed") {
+      setShowRegisterError(true);
+      const timer = setTimeout(() => {
+        setShowRegisterError(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
 
-const getErrorMessage = (error) => {
-  return error && typeof error === 'object' ? error.message || JSON.stringify(error) : error;
-};
+  const getErrorMessage = (error) => {
+    return error && typeof error === "object"
+      ? error.message || JSON.stringify(error)
+      : error;
+  };
   return (
     <Fragment>
       <SEO
@@ -138,29 +146,50 @@ const getErrorMessage = (error) => {
                                 placeholder="Email"
                                 value={loginFormData.email}
                                 onChange={handleLoginChange}
-                                required
+                                style={{ marginBottom: 10 }}
                               />
+                              {loginErrors.email && (
+                                <p
+                                  style={{
+                                    color: "red",
+                                    fontSize: "13px",
+                                    marginTop: 0,
+                                  }}
+                                >
+                                  {loginErrors.email}
+                                </p>
+                              )}
                               <input
                                 type="password"
                                 name="password"
                                 placeholder="Password"
                                 value={loginFormData.password}
                                 onChange={handleLoginChange}
-                                required
-                              
+                                style={{ marginBottom: 10 }}
                               />
-                             {showLoginError && loginStatus === 'failed' && <p style={{ color: 'red' }}>{getErrorMessage(errorLogin)}</p>}
+                              {showLoginError && loginStatus === "failed" && (
+                                <p style={{ color: "red" }}>
+                                  {getErrorMessage(errorLogin)}
+                                </p>
+                              )}
                               <div className="button-box">
                                 <div className="login-toggle-btn">
-                                  <input type="checkbox" required/>
+                                  <input type="checkbox" required />
                                   <label className="ml-10">Remember me</label>
                                   <Link to={process.env.PUBLIC_URL + "/"}>
                                     Forgot Password?
                                   </Link>
                                 </div>
-                                <button type="submit" disabled={loginStatus === 'loading'}>
-          <span>{loginStatus === 'loading' ? 'Logging in...' : 'Login'}</span>
-        </button>
+                                <button
+                                  type="submit"
+                                  disabled={loginStatus === "loading"}
+                                >
+                                  <span>
+                                    {loginStatus === "loading"
+                                      ? "Logging in..."
+                                      : "Login"}
+                                  </span>
+                                </button>
                               </div>
                             </form>
                           </div>
@@ -176,8 +205,27 @@ const getErrorMessage = (error) => {
                                 placeholder="Username"
                                 value={registerFormData.username}
                                 onChange={handleChange}
-                                required
-                              
+                                style={{ marginBottom: 10 }}
+                              />
+                              {registerErrors.name && (
+                                <p
+                                  style={{
+                                    color: "red",
+                                    fontSize: "13px",
+                                    marginTop: 0,
+                                  }}
+                                >
+                                  {registerErrors.name}
+                                </p>
+                              )}
+
+                              <input
+                                name="email"
+                                placeholder="Email"
+                                type="email"
+                                value={registerFormData.email}
+                                onChange={handleChange}
+                                style={{ marginBottom: 10 }}
                               />
                               <input
                                 type="password"
@@ -185,22 +233,33 @@ const getErrorMessage = (error) => {
                                 placeholder="Password"
                                 value={registerFormData.password}
                                 onChange={handleChange}
-                                required
-                              
+                                style={{ marginBottom: 10 }}
                               />
-                              <input
-                                name="email"
-                                placeholder="Email"
-                                type="email"
-                                value={registerFormData.email}
-                                onChange={handleChange}
-                                required
-                              
-                              />
-                              {showRegisterError && status === 'failed' && <p style={{ color: 'red' }}>{getErrorMessage(error)}</p>}
+                              {registerErrors.password && (
+                                <p
+                                  style={{
+                                    color: "red",
+                                    fontSize: "13px",
+                                    marginTop: 0,
+                                  }}
+                                >
+                                  {registerErrors.password}
+                                </p>
+                              )}
+
+                              {showRegisterError && status === "failed" && (
+                                <p style={{ color: "red" }}>
+                                  {getErrorMessage(error)}
+                                </p>
+                              )}
                               <div className="button-box">
                                 <button type="submit">
-                                  <span> {status === 'loading' ? 'Registering...' : 'Register'}</span>
+                                  <span>
+                                    {" "}
+                                    {status === "loading"
+                                      ? "Registering..."
+                                      : "Register"}
+                                  </span>
                                 </button>
                               </div>
                             </form>
