@@ -22,11 +22,12 @@ const LanguageCurrencyChanger = ({ currency }) => {
         <span>
           {i18n.resolvedLanguage === "en"
             ? "English"
-            : i18n.resolvedLanguage === "fn"
-            ? "French"
-            : i18n.resolvedLanguage === "de"
-            ? "Germany"
-            : ""}{" "}
+            // : i18n.resolvedLanguage === "fn"
+            // ? "French"
+            // : i18n.resolvedLanguage === "de"
+            // ? "Germany"
+            : ""
+            }
           <i className="fa fa-angle-down" />
         </span>
         <div className="lang-car-dropdown">
@@ -36,7 +37,7 @@ const LanguageCurrencyChanger = ({ currency }) => {
                 English
               </button>
             </li>
-            <li>
+            {/* <li>
               <button value="fn" onClick={e => changeLanguageTrigger(e)}>
                 French
               </button>
@@ -45,7 +46,7 @@ const LanguageCurrencyChanger = ({ currency }) => {
               <button value="de" onClick={e => changeLanguageTrigger(e)}>
                 Germany
               </button>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>
@@ -55,12 +56,17 @@ const LanguageCurrencyChanger = ({ currency }) => {
         </span>
         <div className="lang-car-dropdown">
           <ul>
-            <li>
+          <li>
+              <button value="PKR" onClick={e => setCurrencyTrigger(e)}>
+                PKR
+              </button>
+            </li>
+            {/* <li>
               <button value="USD" onClick={e => setCurrencyTrigger(e)}>
                 USD
               </button>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <button value="EUR" onClick={e => setCurrencyTrigger(e)}>
                 EUR
               </button>
@@ -69,12 +75,12 @@ const LanguageCurrencyChanger = ({ currency }) => {
               <button value="GBP" onClick={e => setCurrencyTrigger(e)}>
                 GBP
               </button>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>
       <div className="same-language-currency">
-        <p>Call Us 3965410</p>
+        <p>Call Us 03119715121 | 03107580073</p>
       </div>
     </div>
   );
