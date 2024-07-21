@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import SEO from "../../components/seo";
@@ -7,14 +7,15 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, selectAuthError, selectAuthStatus } from "../../store/slices/register-slice";
-import { loginUser, selectLoginError, selectLoginStatus } from "../../store/slices/login-slice";
+import { loginUser, selectLoginError, selectLoginStatus, } from "../../store/slices/login-slice";
 
 const LoginRegister = () => {
   let { pathname } = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const status = useSelector(selectAuthStatus);
-  const loginStatus = useSelector(selectLoginStatus);
   const error = useSelector(selectAuthError);
+  const loginStatus = useSelector(selectLoginStatus);
   const errorLogin = useSelector(selectLoginError);
 
 
@@ -32,14 +33,14 @@ const LoginRegister = () => {
     });
   };
 
-  const handleLoginSubmit = async(e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(loginUser(loginFormData));
+     dispatch(loginUser(loginFormData));
+        navigate('/');
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Login failed:', error);
     }
- console.log(loginFormData)
   };
 
   // register
@@ -157,9 +158,9 @@ const getErrorMessage = (error) => {
                                     Forgot Password?
                                   </Link>
                                 </div>
-                                <button type="submit">
-                                  <span>{loginStatus === 'loading' ? 'Logging in....' : 'Login'}</span>
-                                </button>
+                                <button type="submit" disabled={loginStatus === 'loading'}>
+          <span>{loginStatus === 'loading' ? 'Logging in...' : 'Login'}</span>
+        </button>
                               </div>
                             </form>
                           </div>

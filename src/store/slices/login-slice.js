@@ -7,21 +7,40 @@ export const loginUser = createAsyncThunk(
   async (loginFormData, { rejectWithValue }) => {
     try {
       const response = await API.POST(API_ROUTES?.auth?.login, loginFormData);
-      return response.data;
+      const token = response?.data?.tokens?.access?.token;
+      const userData = response?.data?.user;
+      
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      
+      return { userData, token };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
 
-const loginSlice = createSlice({
-  name: "login",
+const authSlice = createSlice({
+  name: "auth",
   initialState: {
     user: null,
-    status: "idle",  
+    token: null,
+    status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setLogin: (state, action) => {
+      state.user = action.payload;
+      state.status = "succeeded";
+    },
+    setLogout: (state) => {
+      state.user = null;
+      state.token = null;
+      state.status = "idle";
+      localStorage.removeItem('token');
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -30,17 +49,22 @@ const loginSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload;
+        state.user = action.payload.userData;
+        state.token = action.payload.token;
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload.message || action.payload;  
+        state.error = action.payload.message || action.payload;
       });
   },
 });
 
+export const { setLogin, setLogout } = authSlice.actions;
+
 export const selectLoginStatus = (state) => state.login.status;
 export const selectLoginError = (state) => state.login.error;
+export const selectUser = (state) => state.auth.user;
+export const selectToken = (state) => state.auth.token;
 
-export default loginSlice.reducer;
+export default authSlice.reducer;
