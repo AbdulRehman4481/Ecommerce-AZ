@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
-import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +15,24 @@ import {
   selectLoginError,
   selectLoginStatus,
 } from "../../store/slices/login-slice";
+import * as Yup from "yup";
 
+const loginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
+
+const registerSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, "Username must be 3 characters")
+    .required("Username is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
 const LoginRegister = () => {
   let { pathname } = useLocation();
   const navigate = useNavigate();
@@ -25,8 +41,15 @@ const LoginRegister = () => {
   const error = useSelector(selectAuthError);
   const loginStatus = useSelector(selectLoginStatus);
   const errorLogin = useSelector(selectLoginError);
-
-  // login
+  const [registerErrors, setRegisterErrors] = useState({});
+  const [loginErrors, setLoginErrors] = useState({});
+  const [showLoginError, setShowLoginError] = useState(false);
+  const [showRegisterError, setShowRegisterError] = useState(false);
+  const [registerFormData, setRegisterFormData] = useState({
+    name: "",
+    password: "",
+    email: "",
+  });
   const [loginFormData, setLoginFormData] = useState({
     email: "",
     password: "",
@@ -42,19 +65,21 @@ const LoginRegister = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      dispatch(loginUser(loginFormData));
-      navigate("/");
+      await loginSchema.validate(loginFormData, { abortEarly: false });
+      const result = await dispatch(loginUser(loginFormData));
+      if (result.meta.requestStatus === "fulfilled") {
+        navigate("/");
+      }
     } catch (error) {
-      console.error("Login failed:", error);
+      if (error instanceof Yup.ValidationError) {
+        const errors = {};
+        error.inner.forEach((err) => {
+          errors[err.path] = err.message;
+        });
+        setLoginErrors(errors);
+      }
     }
   };
-
-  // register
-  const [registerFormData, setRegisterFormData] = useState({
-    name: "",
-    password: "",
-    email: "",
-  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,14 +92,19 @@ const LoginRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      await registerSchema.validate(registerFormData, { abortEarly: false });
       dispatch(registerUser(registerFormData));
     } catch (error) {
-      console.error("Error:", error);
+      if (error instanceof Yup.ValidationError) {
+        const errors = {};
+        error.inner.forEach((err) => {
+          errors[err.path] = err.message;
+        });
+        setRegisterErrors(errors);
+      }
     }
   };
 
-  const [showLoginError, setShowLoginError] = useState(false);
-  const [showRegisterError, setShowRegisterError] = useState(false);
   useEffect(() => {
     if (loginStatus === "failed") {
       setShowLoginError(true);
@@ -102,12 +132,7 @@ const LoginRegister = () => {
   };
   return (
     <Fragment>
-      <SEO
-        titleTemplate="Login"
-        description="Login page of flone react minimalist eCommerce template."
-      />
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
         <Breadcrumb
           pages={[
             { label: "Home", path: process.env.PUBLIC_URL + "/" },
@@ -146,7 +171,7 @@ const LoginRegister = () => {
                                 placeholder="Email"
                                 value={loginFormData.email}
                                 onChange={handleLoginChange}
-                                style={{ marginBottom: 10 }}
+                                style={{ marginBottom: 2 }}
                               />
                               {loginErrors.email && (
                                 <p
@@ -165,11 +190,16 @@ const LoginRegister = () => {
                                 placeholder="Password"
                                 value={loginFormData.password}
                                 onChange={handleLoginChange}
-                                style={{ marginBottom: 10 }}
+                                style={{ marginBottom: 2 }}
                               />
                               {showLoginError && loginStatus === "failed" && (
-                                <p style={{ color: "red" }}>
+                                <p style={{ color: "red", marginTop: 0 }}>
                                   {getErrorMessage(errorLogin)}
+                                </p>
+                              )}
+                              {loginErrors.password && (
+                                <p style={{ color: "red", fontSize: "13px" }}>
+                                  {loginErrors.password}
                                 </p>
                               )}
                               <div className="button-box">
@@ -205,7 +235,7 @@ const LoginRegister = () => {
                                 placeholder="Username"
                                 value={registerFormData.username}
                                 onChange={handleChange}
-                                style={{ marginBottom: 10 }}
+                                style={{ marginBottom: 2 }}
                               />
                               {registerErrors.name && (
                                 <p
@@ -225,15 +255,27 @@ const LoginRegister = () => {
                                 type="email"
                                 value={registerFormData.email}
                                 onChange={handleChange}
-                                style={{ marginBottom: 10 }}
+                                style={{ marginBottom: 2 }}
                               />
+                              {registerErrors.email && (
+                                <p
+                                  style={{
+                                    color: "red",
+                                    fontSize: "13px",
+                                    marginTop: 0,
+                                  }}
+                                >
+                                  {registerErrors.email}
+                                </p>
+                              )}
+
                               <input
                                 type="password"
                                 name="password"
                                 placeholder="Password"
                                 value={registerFormData.password}
                                 onChange={handleChange}
-                                style={{ marginBottom: 10 }}
+                                style={{ marginBottom: 2 }}
                               />
                               {registerErrors.password && (
                                 <p
